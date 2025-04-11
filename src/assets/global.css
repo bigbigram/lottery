@@ -1,0 +1,34 @@
+:root {
+  --primary-color: #1a1a4e;
+  --secondary-color: #0066cc;
+  --success-color: #28a745;
+  --background-light: #f8f9fa;
+  --text-primary: #333;
+  --text-secondary: #666;
+}
+
+body {
+  background: linear-gradient(135deg, var(--background-light) 0%, #e9ecef 100%);
+  color: var(--text-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.btn {
+  padding: 12px 24px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.05),
+    0 8px 24px rgba(0, 0, 0, 0.05);
+}
