@@ -443,7 +443,7 @@ export default {
 
 .buttons-container {
   display: flex;
-  gap: 15px;
+  gap: 30px; /* Increased from 15px for more space between buttons */
   justify-content: center;
   flex-wrap: wrap;
   margin-top: 60px;  /* Increased from 30px */
@@ -451,7 +451,7 @@ export default {
 }
 
 .generate-btn {
-  background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+  background: linear-gradient(135deg, #cd0da3 0%, #b612b3 100%);
   color: white;
   border: none;
   padding: 10px 20px;  /* Reduced padding */
@@ -589,9 +589,9 @@ export default {
   }
 
   .buttons-container {
-    flex-direction: row;
-    gap: 10px;
+    gap: 10px; /* Keep original smaller gap for mobile */
     justify-content: center;
+    flex-wrap: wrap;
     margin-top: 40px;  /* Adjusted for mobile */
     padding-bottom: 15px;
   }
@@ -665,18 +665,44 @@ export default {
 
 .balls-container {
   position: absolute;
-  height: 80px;
-  width: 100%;
+  height: 183px; /* Increased height */
+  width: 108%;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
   overflow: visible;
-  background: rgba(0,0,0,0.02);
+  background: linear-gradient(to bottom, #4caf50, #388e3c); /* Football field green */
   border-radius: 10px;
   z-index: 5;
   display: flex;
   justify-content: center;
   align-items: center;
+  border: 2px solid #fff; /* White border */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.balls-container::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  height: 80%;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 5px;
+}
+
+.balls-container::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40%;
+  height: 40%;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
 }
 
 .number-ball {
