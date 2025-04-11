@@ -1,82 +1,57 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router'
+import Home from '../views/Home.vue'
+import Lotto from '../views/Lotto.vue'
+import About from '../views/About.vue'
+import Contact from '../views/Contact.vue'
+import Cancellation from '../views/Cancellation.vue'
+import Results from '../views/Results.vue'
+import PrivacyPolicy from '../views/PrivacyPolicy.vue'
+import TermsConditions from '../views/TermsConditions.vue'
+import Checkout from '../views/Checkout.vue'
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: () => import(/* webpackChunkName: "home" */ '../views/Home.vue'),
-    meta: { keepAlive: true }
+    component: Home
+  },
+  {
+    path: '/lotto',
+    component: Lotto
   },
   {
     path: '/about',
-    name: 'About',
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
-    meta: { keepAlive: true }
+    component: About
   },
   {
     path: '/contact',
-    name: 'Contact',
-    component: () => import(/* webpackChunkName: "contact" */ '../views/Contact.vue'),
-    meta: { keepAlive: true }
-  },
-  {
-    path: '/results',
-    name: 'Results',
-    component: () => import(/* webpackChunkName: "results" */ '../views/Results.vue'),
-    meta: { keepAlive: true }
-  },
-  {
-    path: '/checkout',
-    name: 'Checkout',
-    component: () => import(/* webpackChunkName: "checkout" */ '../views/Checkout.vue'),
-    meta: { keepAlive: false }
+    component: Contact
   },
   {
     path: '/cancellation',
-    name: 'Cancellation',
-    component: () => import(/* webpackChunkName: "policies" */ '../views/Cancellation.vue'),
-    meta: { keepAlive: true }
+    component: Cancellation
   },
   {
-    path: '/terms-and-conditions',
-    name: 'Terms',
-    component: () => import(/* webpackChunkName: "terms" */ '../views/Terms.vue'),
-    meta: { keepAlive: true }
+    path: '/results',
+    component: Results
   },
   {
     path: '/privacy-policy',
-    name: 'Privacy',
-    component: () => import(/* webpackChunkName: "privacy" */ '../views/Privacy.vue'),
-    meta: { keepAlive: true }
+    component: PrivacyPolicy
   },
   {
-    path: '/:pathMatch(.*)*',
-    redirect: { name: 'Home' }
+    path: '/terms-and-conditions',
+    component: TermsConditions
+  },
+  {
+    path: '/checkout',
+    component: Checkout
   }
-];
+]
 
 const router = createRouter({
   history: createWebHistory(),
-  routes,
-  scrollBehavior(to, from, savedPosition) {
-    if (savedPosition) {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve(savedPosition)
-        }, 100)
-      })
-    }
-    return { top: 0 }
-  }
-});
+  routes
+})
 
-router.beforeEach((to, from, next) => {
-  if (!to.matched.length) {
-    next({ name: 'Home' });
-    return;
-  }
-  next();
-});
-
-export default router;
+export default router
 

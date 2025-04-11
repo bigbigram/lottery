@@ -27,7 +27,14 @@ export const useLotteryStore = defineStore("lottery", {
       return [...new Map(types.map(item => [item.id, item])).values()];
     },
     getUpcomingDraws: (state) => state.upcomingDraws,
-    getFavoriteNumbers: (state) => state.favoriteNumbers
+    getFavoriteNumbers: (state) => state.favoriteNumbers,
+    hasValidCartItems: (state) => {
+      return state.cartItems.length > 0 && state.cartItems.every(item => 
+        item.lottery_no && 
+        (item.iLotteryTypeId || item.type === 'lotto') && 
+        item.amount
+      )
+    }
   },
   actions: {
     async fetchLotteryList() {
@@ -84,14 +91,7 @@ export const useLotteryStore = defineStore("lottery", {
 
     async refreshLotteryList() {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/ticket.php`, {
-          method: 'GET',
-          mode: 'cors',
-          headers: {
-            'Accept': 'application/json'
-          }
-        });
-        
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/ticket.php`);
         if (!response.ok) return;
         
         const data = await response.json();
@@ -99,11 +99,11 @@ export const useLotteryStore = defineStore("lottery", {
           this.lotteryNumbers = data;
           this.lastUpdateTime = Date.now();
           
-          // Remove cart items that no longer exist in lottery numbers
+          // Only filter regular lottery tickets, keep lotto tickets
           this.cartItems = this.cartItems.filter(cartItem => 
+            cartItem.type === 'lotto' || 
             data.some(lottery => lottery.lottery_no === cartItem.lottery_no)
           );
-          // Update session storage with filtered cart
           sessionStorage.setItem('cartItems', JSON.stringify(this.cartItems));
         }
       } catch (error) {
@@ -142,17 +142,23 @@ export const useLotteryStore = defineStore("lottery", {
       }
     },
 
-    addToCart(lotteryNumber) {
-      if (!this.cartItems.some(item => item.lottery_no === lotteryNumber.lottery_no)) {
-        const cartItem = {
-          ...lotteryNumber,
-          lottery_id: lotteryNumber.iLotteryId || Date.now(),
-          lottery_type: lotteryNumber.lottery_name,
-          draw_date: lotteryNumber.draw_date,
-          amount: parseInt(lotteryNumber.amount),
-          added_at: new Date().toISOString()
+    addToCart(lottery) {
+      const exists = this.cartItems.some(item => 
+        item.lottery_no === lottery.lottery_no && 
+        item.type === (lottery.type || 'regular')
+      );
+
+      if (!exists) {
+        const ticketToAdd = {
+          ...lottery,
+          id: lottery.id || `TICKET-${Date.now()}`,
+          iLotteryTypeId: lottery.iLotteryTypeId || 'LOTTO',
+          type: lottery.type || 'regular',
+          lottery_name: lottery.lottery_name || 'Bhutan Lotto',
+          amount: lottery.amount || '100',
+          draw_date: lottery.draw_date || new Date().toISOString().split('T')[0]
         };
-        this.cartItems.push(cartItem);
+        this.cartItems.push(ticketToAdd);
         sessionStorage.setItem('cartItems', JSON.stringify(this.cartItems));
       }
     },
@@ -172,9 +178,18 @@ export const useLotteryStore = defineStore("lottery", {
 
     // Add method to load cart from session
     loadCartFromSession() {
-      const savedCart = sessionStorage.getItem('cartItems');
+      const savedCart = sessionStorage.getItem('cartItems')
       if (savedCart) {
-        this.cartItems = JSON.parse(savedCart);
+        try {
+          const parsedCart = JSON.parse(savedCart)
+          this.cartItems = parsedCart.map(item => ({
+            ...item,
+            type: item.type || (item.iLotteryTypeId === 'LOTTO' ? 'lotto' : 'regular')
+          }))
+        } catch (error) {
+          console.error('Error loading cart:', error)
+          this.cartItems = []
+        }
       }
     },
 

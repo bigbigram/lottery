@@ -225,6 +225,7 @@ export default {
   margin: 0;
   font-weight: 600;
   background: linear-gradient(135deg, #1a1a4e 0%, #2b2b7b 100%);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }

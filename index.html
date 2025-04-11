@@ -2,66 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <!-- Mobile Web App -->
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="theme-color" content="#1976d2">
-  <meta name="apple-mobile-web-app-title" content="Indo Lottery">
-
-  <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="src/assets/favicon.ico">
-  <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-
-  <!-- Viewport -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-  <!-- ✅ Fixed Content Security Policy -->
-  <meta http-equiv="Content-Security-Policy" content="
-    default-src 'self';
-    connect-src 'self' https://lottery.indob2c.com https://api.emailjs.com;
-    script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://api.emailjs.com;
-    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
-    font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:;
-    frame-src 'self' https://www.google.com;
-    img-src 'self' data: https:;
-  ">
-
-  <!-- Preconnect for performance -->
-  <link rel="preconnect" href="https://lottery.indob2c.com">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <!-- Google Fonts & Font Awesome -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-
-  <!-- Inline Styles -->
-  <style>
-    html, body {
-      touch-action: pan-y pinch-zoom;
-      overscroll-behavior-y: none;
-    }
-    body {
-      font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
-      -webkit-tap-highlight-color: transparent;
-      background: #f5f5f5;
-      margin: 0;
-      padding: 0;
-    }
-  </style>
-
-  <title>Indo Lottery Agent</title>
+  <link rel="icon" href="src/assets/favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <title>Bhutan Lottery</title>
 </head>
 <body>
   <div id="app"></div> <!-- Vue app will mount here -->
 
   <!-- App Script -->
   <script type="module" src="/src/main.js"></script>
-
-  <!-- External Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 </body>
 </html>

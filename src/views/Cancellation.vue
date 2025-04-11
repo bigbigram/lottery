@@ -1,6 +1,6 @@
 <template>
   <div class="policy-page">
-    <h1>Cancellation & Refund Policy</h1>
+    <h1>Cancellation & Refund</h1>
     <div class="content">
       <section>
         <h2>Lottery Ticket Cancellation</h2>
@@ -35,7 +35,7 @@
           <div class="contact-info">
             <div><i class="fas fa-envelope"></i> indoagent2022@gmail.com
             </div>
-            <div><i class="fas fa-phone"></i> +975 1234567</div>
+            <div><i class="fas fa-phone"></i> +975-17919999</div>
           </div>
         </div>
       </section>

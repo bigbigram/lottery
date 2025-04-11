@@ -5,6 +5,12 @@
       <p class="subtitle">Choose your lucky numbers and win big prizes!</p>
     </div>
 
+    <!-- Add Lotto Tab -->
+    <div class="lotto-tab blink" @click="goToLotto">
+      <i class="fas fa-dice"></i>
+      <span>Click to Play Bhutan Lotto</span>
+    </div>
+
     <div class="search-container">
       <select 
         v-model="selectedType" 
@@ -131,6 +137,10 @@ export default {
       router.push('/checkout');
     };
 
+    const goToLotto = () => {
+      router.push('/lotto');
+    };
+
     const uniqueLotteryTypes = computed(() => {
       const types = store.lotteryNumbers.reduce((acc, curr) => {
         if (!acc.some(type => type.iLotteryTypeId === curr.iLotteryTypeId)) {
@@ -177,7 +187,8 @@ export default {
       toastType,
       selectedType,
       uniqueLotteryTypes,
-      handleTypeChange
+      handleTypeChange,
+      goToLotto
     };
   }
 };
@@ -225,22 +236,384 @@ export default {
 
 .lottery-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 15px;
-  padding: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  padding: 25px;
   max-width: 1200px;
   margin: 0 auto;
 }
 
 .lottery-box {
-  background: white;
-  border-radius: 12px;
-  padding: 15px;
   position: relative;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border: 1px solid #eef2ff;
   overflow: hidden;
-  transition: all 0.3s ease;
-  border: 1px solid rgba(0, 102, 204, 0.1);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.lottery-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, #4f46e5, #6366f1);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+.lottery-box:hover::before {
+  opacity: 0.05;
+}
+
+.lottery-box:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 20px rgba(79, 70, 229, 0.15);
+  border-color: #6366f1;
+}
+
+.lottery-inner {
+  position: relative;
+  z-index: 2;
+}
+
+.lottery-number {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #4f46e5;
+  text-align: center;
+  margin-bottom: 0;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.lottery-details {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background: #f5f7ff;
+  border-radius: 12px;
+  margin-top: auto;
+}
+
+.lottery-name {
+  font-size: 0.8rem;
+  color: #4f46e5;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.lottery-price {
+  padding: 6px 12px;
+  background: #4f46e5;
+  color: white;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
+}
+
+.lottery-box.selected {
+  background: #f5f7ff;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+}
+
+.lottery-box.selected .lottery-details {
+  background: #eef2ff;
+}
+
+@media (max-width: 768px) {
+  .lottery-box {
+    padding: 15px;
+  }
+
+  .lottery-number {
+    font-size: 1.4rem;
+  }
+
+  .lottery-details {
+    padding: 8px;
+  }
+
+  .lottery-name {
+    font-size: 0.75rem;
+  }
+
+  .lottery-price {
+    font-size: 0.8rem;
+    padding: 4px 10px;
+  }
+}
+
+.lottery-box::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(25, 118, 210, 0.05),
+    rgba(25, 118, 210, 0.02)
+  );
+  border-radius: inherit;
+  z-index: 0;
+}
+
+.lottery-box:hover {
+  transform: translateY(-5px);
+  border-color: rgba(25, 118, 210, 0.2);
+  background: linear-gradient(145deg, #ffffff, #f0f7ff);
+  box-shadow: 
+    0 12px 25px rgba(25, 118, 210, 0.15),
+    0 8px 12px rgba(25, 118, 210, 0.1);
+}
+
+.lottery-box.selected {
+  background: linear-gradient(145deg, #ECF5FF, #E3F2FF);
+  border: 2px solid #1976d2;
+  box-shadow: 
+    0 8px 20px rgba(25, 118, 210, 0.2),
+    inset 0 0 20px rgba(25, 118, 210, 0.05);
+}
+
+.lottery-number {
+  position: relative;
+  z-index: 1;
+  font-size: 2rem;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 15px;
+  background: linear-gradient(135deg, #1976d2, #2196f3);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 2px 2px 4px rgba(25, 118, 210, 0.1);
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.lottery-details {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 15px;
+  margin-top: auto;
+  border-top: 1px solid rgba(25, 118, 210, 0.1);
+}
+
+.lottery-name {
+  font-size: 0.85rem;
+  color: #1976d2;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.lottery-price {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: white;
+  background: linear-gradient(135deg, #1976d2, #2196f3);
+  padding: 8px 16px;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.2);
+}
+
+@media (max-width: 768px) {
+  .lottery-box {
+    padding: 20px;
+    min-height: 120px;
+    border-radius: 20px;
+  }
+
+  .lottery-number {
+    font-size: 1.6rem;
+    margin-bottom: 12px;
+  }
+
+  .lottery-name {
+    font-size: 0.75rem;
+  }
+
+  .lottery-price {
+    font-size: 0.8rem;
+    padding: 6px 12px;
+  }
+}
+
+.lottery-box.selected {
+  background: linear-gradient(145deg, #f0f7ff, #e6f0ff);
+  border: 2px solid #1976d2;
+  box-shadow: 
+    0 8px 20px rgba(25, 118, 210, 0.15),
+    inset 0 0 20px rgba(25, 118, 210, 0.05);
+}
+
+.lottery-number {
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  background: linear-gradient(135deg, #1a1a4e 0%, #2b2b7b 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 1px;
+  margin-bottom: 15px;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.lottery-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 15px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.lottery-name {
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.lottery-price {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, #2196f3, #1976d2);
+  padding: 6px 12px;
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.2);
+}
+
+@media (max-width: 768px) {
+  .lottery-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    padding: 15px;
+  }
+
+  .lottery-box {
+    padding: 20px;
+    min-height: 100px;
+  }
+
+  .lottery-number {
+    font-size: 1.6rem;
+    margin-bottom: 12px;
+  }
+
+  .lottery-name {
+    font-size: 0.75rem;
+  }
+
+  .lottery-price {
+    font-size: 0.8rem;
+    padding: 4px 10px;
+  }
+}
+
+.lottery-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #1976d2, #2196f3);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.lottery-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
+}
+
+.lottery-box:hover::before {
+  opacity: 1;
+}
+
+.lottery-box.selected {
+  background: linear-gradient(145deg, #f8f9ff, #edf1ff);
+  border: 2px solid #1976d2;
+}
+
+.lottery-number {
+  font-size: 1.6rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 15px;
+  background: linear-gradient(135deg, #1a1a4e 0%, #2b2b7b 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 1px;
+}
+
+.lottery-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.lottery-name {
+  font-size: 0.85rem;
+  color: #555;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.lottery-price {
+  font-size: 0.9rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  box-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
+}
+
+@media (max-width: 768px) {
+  .lottery-box {
+    padding: 15px;
+    border-radius: 12px;
+  }
+
+  .lottery-number {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+  }
+
+  .lottery-name {
+    font-size: 0.75rem;
+  }
+
+  .lottery-price {
+    font-size: 0.8rem;
+    padding: 4px 10px;
+  }
 }
 
 .lottery-box:hover {
@@ -260,8 +633,10 @@ export default {
   text-align: center;
   margin-bottom: 10px;
   background: linear-gradient(135deg, #1a1a4e 0%, #2b2b7b 100%);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  letter-spacing: 1px;
 }
 
 .lottery-details {
@@ -371,7 +746,7 @@ export default {
   position: relative;
   height: auto;
   min-height: 85px;
-  background: linear-gradient(145deg, #ffe7b9, #ffd8c2);
+  background: linear-gradient(145deg, #51a7fc, #9ef6b2);
   border: 1px solid rgba(0, 102, 204, 0.1);
   border-radius: 12px;
   cursor: pointer;
@@ -396,7 +771,7 @@ export default {
 
 .lottery-name {
   font-size: 0.7rem;
-  color: #666;
+  color: #ff0000;
   font-weight: 500;
   text-align: left;
   white-space: nowrap;
@@ -854,5 +1229,52 @@ p {
   .search-box {
     flex: 1;
   }
+}
+
+.lotto-tab {
+  background: linear-gradient(135deg, #149803, #d96601);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  margin: 0 auto 20px;
+  max-width: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(25, 118, 210, 0.2);
+}
+
+.lotto-tab:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(240, 99, 5, 0.3);
+}
+
+.lotto-tab i {
+  font-size: 1.2rem;
+}
+
+.lotto-tab span {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+  .lotto-tab {
+    margin: 0 15px 15px;
+    padding: 10px 20px;
+  }
+}
+
+@keyframes blink {
+  0% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.02); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.lotto-tab.blink {
+  animation: blink 1s ease-in-out infinite;
 }
 </style>

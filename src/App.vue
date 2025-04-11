@@ -15,6 +15,9 @@
           <router-link to="/results" class="nav-link">
             <i class="fas fa-trophy"></i> Results
           </router-link>
+          <router-link to="/lotto" class="nav-link">
+            <i class="fas fa-ticket-alt"></i> Lotto
+          </router-link>
           <router-link to="/about" class="nav-link">
             <i class="fas fa-info-circle"></i> About
           </router-link>
@@ -24,30 +27,16 @@
         </nav>
       </div>
     </header>
-    <router-view v-slot="{ Component }">
-      <transition name="fade" mode="out-in">
-        <suspense>
-          <template #default>
-            <div class="view-wrapper">
-              <keep-alive v-if="$route.meta.keepAlive">
-                <component :is="Component" />
-              </keep-alive>
-              <component :is="Component" v-else />
-            </div>
-          </template>
-          <template #fallback>
-            <div class="page-loading">
-              <div class="loading-spinner"></div>
-            </div>
-          </template>
-        </suspense>
-      </transition>
-    </router-view>
+    <div class="app-wrapper">
+      <router-view></router-view>
+      <footer-nav></footer-nav>
+    </div>
     <footer>
       <p class="desktop-footer">
         &copy; 2025 Indo Lottery. All rights reserved. 
         <router-link to="/terms-and-conditions">Terms & Conditions</router-link> | 
         <router-link to="/privacy-policy">Privacy Policy</router-link>
+        <router-link to="/cancellation">Cancellation</router-link>
       </p>
       
       <!-- Mobile Bottom Navigation -->
@@ -59,6 +48,10 @@
         <router-link to="/results" class="nav-item">
           <i class="fas fa-trophy"></i>
           <span>Results</span>
+        </router-link>
+        <router-link to="/lotto" class="nav-item">
+          <i class="fas fa-ticket-alt"></i>
+          <span>Lotto</span>
         </router-link>
         <router-link to="/about" class="nav-item">
           <i class="fas fa-info-circle"></i>
@@ -74,8 +67,14 @@
 </template>
 
 <script>
+import FooterNav from './components/FooterNav.vue'
+import companyLogo from './assets/companylogo.png'
+
 export default {
-  name: "App"
+  name: 'App',
+  components: {
+    FooterNav
+  }
 }
 </script>
 
@@ -258,19 +257,20 @@ footer {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 6px 0;
+    padding: 6px 2px; /* Reduced padding to fit 5 items */
     color: #666;
     text-decoration: none;
-    font-size: 0.75rem;
+    font-size: 0.7rem; /* Slightly smaller font */
     font-weight: 500;
     transition: all 0.3s ease;
     position: relative;
   }
 
   .nav-item i {
-    font-size: 1.3rem;
-    margin-bottom: 4px;
+    font-size: 1.1rem; /* Slightly smaller font */
+    margin-bottom: 3px;
     background: linear-gradient(135deg, #1a1a4e 0%, #2b2b7b 100%);
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     opacity: 0.7;
@@ -407,6 +407,28 @@ footer {
 @media (max-width: 768px) {
   .desktop-nav {
     display: none;
+  }
+}
+
+.app-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-desktop {
+  margin-top: auto;
+  position: sticky;
+  bottom: 0;
+  width: 100%;
+  z-index: 100;
+  background: white;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+  .footer-desktop {
+    position: fixed;
   }
 }
 </style>
