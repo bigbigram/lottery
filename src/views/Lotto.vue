@@ -12,28 +12,35 @@
 
     <div class="number-generator">
       <div class="card">
-        <h2>Your Lucky Numbers</h2>
-        <div class="draw-date">
-          Drawing Date: {{ formatDate(drawDate) }}
-        </div>
-        <div class="numbers-display">
-          <span v-for="(number, index) in luckyNumbers" 
-                :key="index" 
-                class="number-ball">
-            {{ number }}
-          </span>
-        </div>
-        
-        <div class="buttons-container">
-          <button @click="generateNumbers" class="generate-btn">
-            <i class="fas fa-sync-alt"></i>
-            Generate Numbers
-          </button>
+        <div class="card-content">
+          <h2>Your Lucky Numbers</h2>
+          <div class="draw-date">
+            Drawing Date: {{ formatDate(drawDate) }}
+          </div>
+          <div class="numbers-display">
+            <div class="balls-container">
+              <TransitionGroup name="ball-shuffle">
+                <span v-for="(number, index) in luckyNumbers" 
+                      :key="number" 
+                      class="number-ball"
+                      :style="[ballStyles[number]]">
+                  {{ number }}
+                </span>
+              </TransitionGroup>
+            </div>
+          </div>
           
-          <button @click="addToCart" class="cart-btn" v-if="luckyNumbers.length">
-            <i class="fas fa-cart-plus"></i>
-            Add to Cart
-          </button>
+          <div class="buttons-container">
+            <button @click="generateNumbers" class="generate-btn">
+              <i class="fas fa-sync-alt"></i>
+              Generate Numbers
+            </button>
+            
+            <button @click="addToCart" class="cart-btn" v-if="luckyNumbers.length">
+              <i class="fas fa-cart-plus"></i>
+              Add to Cart
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -67,6 +74,7 @@ export default {
     const lastGeneratedDate = ref('')
     const todayNumbers = ref([])
     const drawDate = ref('')
+    const ballStyles = ref({})
 
     const getCurrentDrawDate = () => {
       const now = new Date()
@@ -104,11 +112,8 @@ export default {
         const doubleDigits = Array.from({ length: 27 }, (_, i) => i + 10)
         const numbers = []
         
-        // Only 20% chance to include a single digit
-        const includeSingleDigit = Math.random() < 0.1
-        
-        // First fill with double digits
-        while (numbers.length < (includeSingleDigit ? 4 : 5)) {
+        // Always generate 5 balls (removed single digit chance)
+        while (numbers.length < 5) {
           const randomIndex = Math.floor(Math.random() * doubleDigits.length)
           const num = doubleDigits[randomIndex]
           
@@ -118,12 +123,6 @@ export default {
             numbers.push(num)
             doubleDigits.splice(randomIndex, 1)
           }
-        }
-        
-        // Add single digit if chosen
-        if (includeSingleDigit) {
-          const randomSingleIndex = Math.floor(Math.random() * singleDigits.length)
-          numbers.push(singleDigits[randomSingleIndex])
         }
         
         return numbers.sort((a, b) => a - b)
@@ -138,7 +137,74 @@ export default {
         )
       )
 
-      luckyNumbers.value = sortedNumbers
+      // Initial display with random positions
+      luckyNumbers.value = [...sortedNumbers].sort(() => Math.random() - 0.5)
+      
+      // Set initial random positions
+      luckyNumbers.value.forEach(num => {
+        ballStyles.value[num] = {
+          transform: `translate(${Math.random() * 300 - 150}px, ${Math.random() * 200 - 100}px) rotate(${Math.random() * 360}deg)`,
+          transition: 'none'
+        }
+      })
+
+      let shuffleCount = 0
+      const maxShuffles = 8
+      
+      const shuffle = () => {
+        setTimeout(() => {
+          // Randomly reorder numbers during shuffle
+          luckyNumbers.value = [...luckyNumbers.value].sort(() => Math.random() - 0.5)
+          
+          // Generate chaotic movement with proper string termination
+          luckyNumbers.value.forEach(num => {
+            ballStyles.value[num] = {
+              transform: `translate(${Math.random() * 300 - 150}px, ${Math.random() * 200 - 100}px) rotate(${Math.random() * 720 - 360}deg)`,
+              transition: 'all 0.4s cubic-bezier(0.45, 0.05, 0.55, 0.95)'
+            }
+          })
+          
+          shuffleCount++
+          
+          if (shuffleCount < maxShuffles) {
+            shuffle()
+          } else {
+            // Final alignment with proper string termination
+            setTimeout(() => {
+              luckyNumbers.value = [...sortedNumbers].sort((a, b) => a - b)
+              const isDesktop = window.innerWidth > 768
+              
+              luckyNumbers.value.forEach((num, index) => {
+                if (isDesktop) {
+                  const spacing = 80  // Increased from 50 to add more space between balls
+                  const totalWidth = (luckyNumbers.value.length - 1) * spacing
+                  const startX = -totalWidth / 2
+                  
+                  ballStyles.value[num] = {
+                    transform: 'translate(-50%, -150%)', // Move up further
+                    left: `calc(50% + ${startX + (index * spacing)}px)`,
+                    transition: 'all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)'
+                  }
+                } else {
+                  const spacing = 55  // Increased from 45 to add more space between balls
+                  const totalWidth = (luckyNumbers.value.length - 1) * spacing
+                  const startX = -totalWidth / 2
+                  
+                  ballStyles.value[num] = {
+                    transform: 'translate(-50%, -150%)', // Move up further
+                    left: `calc(50% + ${startX + (index * spacing)}px)`,
+                    transition: 'all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)'
+                  }
+                }
+              })
+            }, 600)
+          }
+        }, 300)
+      }
+      
+      // Start shuffling after a brief delay
+      setTimeout(shuffle, 100)
+
       todayNumbers.value = sortedNumbers
       lastGeneratedDate.value = new Date().toISOString().split('T')[0]
     }
@@ -222,7 +288,8 @@ export default {
       todayNumbers,
       goToCheckout,
       drawDate,
-      formatDate
+      formatDate,
+      ballStyles
     }
   }
 }
@@ -299,6 +366,26 @@ export default {
   border-radius: 20px;
   padding: 30px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  min-height: 400px; /* Added fixed minimum height */
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.card-content {
+  position: relative;
+  z-index: 1;
+}
+
+.number-generator {
+  max-width: 600px;
+  margin: -50px auto 30px;
+  padding: 0 20px;
+  position: relative;
+  z-index: 1;
+  min-height: 500px; /* Added fixed height */
 }
 
 .number-generator {
@@ -318,25 +405,29 @@ export default {
 .numbers-display {
   display: flex;
   justify-content: center;
-  gap: 15px;
+  align-items: center; /* Center vertically */
   margin: 30px 0;
-  flex-wrap: wrap;
+  position: relative;
+  height: 180px;
+  flex: 1;
+  isolation: isolate;
 }
 
 .number-ball {
-  width: 65px;
-  height: 65px;
-  background: linear-gradient(135deg, #1a1a4e 0%, #2b2b7b 100%);
+  width: 55px;  /* Increased from 45px */
+  height: 55px;
+  background: linear-gradient(135deg, #eec50e 0%, #f36907 100%);
   color: white;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.8rem;
+  font-size: 1.4rem;  /* Increased from 1.2rem */
   font-weight: bold;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   animation: popIn 0.3s ease-out;
   position: relative;
+  transition: all 0.3s ease;
 }
 
 .number-ball::after {
@@ -355,7 +446,8 @@ export default {
   gap: 15px;
   justify-content: center;
   flex-wrap: wrap;
-  margin-top: 30px;
+  margin-top: 60px;  /* Increased from 30px */
+  padding-bottom: 20px; /* Added padding at bottom */
 }
 
 .generate-btn {
@@ -471,14 +563,9 @@ export default {
 }
 
 @keyframes popIn {
-  from {
-    transform: scale(0);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
+  0% { transform: scale(0) rotate(0deg); }
+  60% { transform: scale(1.2) rotate(180deg); }
+  100% { transform: scale(1) rotate(360deg); }
 }
 
 @media (max-width: 768px) {
@@ -487,19 +574,26 @@ export default {
   }
 
   .number-ball {
-    width: 55px;
-    height: 55px;
-    font-size: 1.4rem;
+    width: 50px; /* Increased from 45px */
+    height: 50px;
+    font-size: 1.3rem;
   }
 
   .card {
     padding: 20px;
+    min-height: 350px; /* Slightly smaller for mobile */
+  }
+
+  .numbers-display {
+    height: 160px; /* Adjusted for mobile */
   }
 
   .buttons-container {
-    flex-direction: row; /* Changed from column */
+    flex-direction: row;
     gap: 10px;
     justify-content: center;
+    margin-top: 40px;  /* Adjusted for mobile */
+    padding-bottom: 15px;
   }
 
   .generate-btn, .cart-btn {
@@ -531,6 +625,32 @@ export default {
     padding: 6px 15px;
     font-size: 0.9rem;
   }
+
+  .number-generator {
+    min-height: 450px; /* Adjusted for mobile */
+  }
+
+  .balls-container {
+    width: 240px;
+    height: 60px;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .number-ball {
+    width: 45px; /* Smaller balls for mobile */
+    height: 45px;
+    font-size: 1.2rem;
+  }
+  
+  .balls-container {
+    height: 220px; /* Increased height for two rows */
+    width: 100%;
+  }
+  
+  .numbers-display {
+    height: 220px; /* Match container height */
+  }
 }
 
 .draw-date {
@@ -541,5 +661,55 @@ export default {
   padding: 8px;
   background: #f0f7ff;
   border-radius: 8px;
+}
+
+.balls-container {
+  position: absolute;
+  height: 80px;
+  width: 100%;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  overflow: visible;
+  background: rgba(0,0,0,0.02);
+  border-radius: 10px;
+  z-index: 5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.number-ball {
+  width: 55px;  /* Increased from 45px */
+  height: 55px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  will-change: transform, left;
+  z-index: 6;
+}
+
+/* Remove these conflicting styles if they exist */
+/* .ball-shuffle-move {
+  transition: transform 0.3s ease;
+}
+.shuffle-move {
+  transition: transform 0.3s ease;
+} */
+
+.ball-shuffle-move {
+  transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.ball-shuffle-enter-active,
+.ball-shuffle-leave-active {
+  transition: all 0.3s ease;
+}
+
+.ball-shuffle-enter-from,
+.ball-shuffle-leave-to {
+  opacity: 0;
+  transform: scale(0.5);
 }
 </style>
